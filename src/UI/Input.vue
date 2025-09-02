@@ -9,17 +9,11 @@
 </template>
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useTodoStore, type ITodo } from "../store/todo";
-import Button from '../UI/Button.vue';
-import Title from "../UI/Title.vue";
-import Error from '../UI/Error.vue';
-import List from '../UI/List.vue';
-
 const newTodo = ref("");
 const hasError =  ref(false);
 const errorMessage = ref("");
 
-const todoStore = useTodoStore()
+const todoStore = useTodoStore();
 
 function isRussianText(text: string) {
   return /^[а-яА-Я0-9]+$/.test(text.trim());
