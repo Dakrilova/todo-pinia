@@ -1,32 +1,26 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useTodoStore, type ITodo } from "../store/todo";
-import Button from '../UI/Button.vue';
-import Title from '../UI/Title.vue';
-import Error from '../UI/Error.vue';
-import List from '../UI/List.vue';
-import Input from "../UI/Input.vue";
+import { useTodoStore } from "../store/todo";
+import Title from "../ui/Title.vue";
+import Error from "../ui/Error.vue";
+import Input from "../ui/Input.vue";
+import {Item, List} from "../ui/list";
 
-const newTodo = ref("");
+
 const hasError =  ref(false);
 const errorMessage = ref("");
 
 const todoStore = useTodoStore()
 
-function isRussianText(text: string) {
-  return /^[а-яА-Я0-9]+$/.test(text.trim());
+function errorTodo() {
+  hasError.value = true;
+  errorMessage.value = "Разрешён только русский язык";
+  return;
 }
 
-function addTodo(){
-   if (!isRussianText(newTodo.value)) {
-    hasError.value = true;
-    errorMessage.value = "Разрешён только русский язык";
-    console.log('error')
-    return;
-  }
+function addTodo(data: string){
   hasError.value = false;
-  todoStore.addTodo(newTodo.value)
-  newTodo.value = "";
+  todoStore.addTodo(data)
 }
 
 onMounted(() => {
@@ -38,13 +32,21 @@ onMounted(() => {
 <template>
  <div class="todo">
     <div class="todo__box">
-      <Title></Title>
-      <div class="todo__row">
-        <Input></Input>
-        <Button></Button>
-      </div>
-      <Error></Error>
-      <List></List>
+      <Title text="Список задач"/>
+      <Input @add-todo="(data) => addTodo(data)" @error-todo="errorTodo"/>
+      <Error :has-error="hasError" :error-message="errorMessage"/>
+      <List>
+        <template #items>
+          <Item
+            v-for="(todo, index) in todoStore.todoActiveList"
+            :key="index"
+            :completed="todo.completed"
+            :text="todo.text"
+            @remove-todo="todoStore.removeTodo(todo.id)"
+            @toggle-todo="todoStore.toggleTodo(todo.id)"
+            />
+        </template>
+      </List>
     </div>
   </div>
 </template>
@@ -69,15 +71,6 @@ body {
   border-radius: 10px;
   background-color: #fff;
   padding: 40px 30px 70px;
-  margin: 100px auto -20;
-}
-.todo__row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #e0e0e0;
-  border-radius: 30px;
-  margin-bottom: 30px;
-  padding-left: 20px;
+  margin: 100px auto;
 }
 </style>

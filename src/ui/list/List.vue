@@ -1,11 +1,12 @@
+<script setup lang="ts">
+</script>
+
 <template>
     <ul class="todo__list">
-        <Item></Item>
+        <slot name="items"></slot>
     </ul>
 </template>
-<script setup>
-import Item from "../UI/Item.vue"
-</script>
+
 <style>
 
 .todo__list {

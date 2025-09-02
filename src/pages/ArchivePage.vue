@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useTodoStore, type ITodo } from "../store/todo";
+import {Item, List} from "../ui/list";
 
 const todoStore = useTodoStore()
 
@@ -9,17 +10,18 @@ const todoStore = useTodoStore()
 <template>
     <div class="todo">
         <div class="todo__box">
-            <ul class="todo__list">
-                <li
+          <List>
+            <template #items>
+              <Item
                 v-for="(todo, index) in todoStore.todoArchiveList"
                 :key="index"
-                :class="{ checked: todo.completed }"
-                @click="todoStore.toggleTodo(todo.id)"
-                >
-                {{ todo.text }}
-                <span @click.stop="todoStore.removeTodo(todo.id)">×</span>
-                </li>
-            </ul>
+                :completed="todo.completed"
+                :text="todo.text"
+                @remove-todo="todoStore.removeTodo(todo.id)"
+                @toggle-todo="todoStore.toggleTodo(todo.id)"
+                />
+            </template>
+          </List>
         </div>
     </div>
 </template>

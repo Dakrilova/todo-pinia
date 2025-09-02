@@ -1,18 +1,34 @@
-<template>
-    <li
-        v-for="(todo, index) in todoStore.todoActiveList"
-        :key="index"
-        :class="{ checked: todo.completed }"
-        @click="todoStore.toggleTodo(todo.id)"
+<script setup lang="ts">
 
-        >
-        {{ todo.text }}
-        <span @click.stop="todoStore.removeTodo(todo.id)">×</span>
-    </li>
-</template>
-<script>
+defineProps({
+  completed: {
+    type: Boolean
+  },
+  text: {
+    type: String
+  }
+})
+
+const emit = defineEmits(["toggleTodo", "removeTodo"])
+
+function toggle() {
+  emit("toggleTodo")
+}
+
+function remove() {
+  emit("removeTodo")
+}
 
 </script>
+<template>
+    <li
+        :class="{ checked: completed }"
+        @click="toggle"
+        >
+        {{ text }}
+        <span @click.stop="remove">×</span>
+    </li>
+</template>
 <style>
 
 .todo__list li {
